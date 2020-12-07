@@ -32,14 +32,19 @@ class MerkleTrees(object):
         txns_list = list(txns.keys())
         if len(txns_list)%2 != 0:
             txns_list.append(txns_list[-1])
-        
+        intermediate_nodes=[]
         for index in range(0, len(txns_list)-1, 2):
             left = txns_list[index]
             right = txns_list[index+1]
             combine = left + right
             root = hashlib.sha256(combine.encode()).hexdigest()
             current_node = Node(root, Node(left), Node(right))
-            # TODO
+            intermediate_nodes.append(current_node)
+        left=intermediate_nodes[0]
+        right=intermediate_nodes[1]
+        combine=left.val+right.val
+        root=hashlib.sha256(combine.encode()).hexdigest()
+        self.root = Node(root, left=left, right=right)
 
 
     def print_level_order(self):
@@ -48,7 +53,21 @@ class MerkleTrees(object):
          / \     -> --------------------    
         2   3       2 3
         """
-        # TODO
+        next_to_visit=[self.root]
+        while len(next_to_visit)>0:
+            node_to_visit=next_to_visit
+            next_to_visit=[]
+            row=""
+            for curr_node in node_to_visit:
+                row+=curr_node.val
+                row+=" "
+                if curr_node.left!=None:
+                    next_to_visit.append(curr_node.left)
+                if curr_node.right!=None:
+                    next_to_visit.append(curr_node.right)
+            print(row)
+            print("--------------------")
+        
         
 
     @staticmethod
@@ -66,6 +85,26 @@ class MerkleTrees(object):
         if x.get_root_hash() == y.get_root_hash():
             return diff
         
-        # TODO
+        nodes_x=[x.root]
+        nodes_y=[y.root]
+
+        while len(nodes_x)>0 and len(nodes_y)>0:
+            iter_x=nodes_x
+            iter_y=nodes_y
+
+            nodes_x=[]
+            nodes_y=[]
+            for i in range(len(iter_x)):
+                if iter_x[i].val!=iter_y[i].val:
+                    diff.append((iter_x[i].val,iter_y[i].val))
+                    if iter_x[i].left!=None:
+                        nodes_x.append(iter_x[i].left)
+                    if iter_x[i].right!=None:
+                        nodes_x.append(iter_x[i].right)
+                    if iter_y[i].left!=None:
+                        nodes_y.append(iter_y[i].left)
+                    if iter_y[i].right!=None:
+                        nodes_y.append(iter_y[i].right)
+        
         
         return diff

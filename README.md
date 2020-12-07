@@ -4,7 +4,7 @@ Implement a Merkle tree to detect differences between directories. The detection
 
 > You must use given hash_files.py and test_merkle_trees.py to validate your solution. Although you are allowed to change anything inside merkle_trees.py, any modifications to hash_files.py and test_merkle_trees.py will negatively impact your score.
 
-# Test Data
+# Test Dat
 
 All directories have the same number of files with the same name. However, dir_C/file3.txt has
 
